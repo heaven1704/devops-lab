@@ -1,0 +1,36 @@
+---
+- name: Configure EC2 Instance
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install Nginx
+      package:
+        name: nginx
+        state: present
+
+    - name: Start and enable Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Deploy index page
+      copy:
+        content: "<h1>Configured by Ansible - DevOps Lab</h1>"
+        dest: /var/www/html/index.html
+        mode: '0644'
+
+    - name: Verify Nginx is running
+      command: systemctl is-active nginx
+      register: nginx_status
+
+    - name: Print Nginx status
+      debug:
+        msg: "Nginx status: {{ nginx_status.stdout }}"
