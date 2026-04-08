@@ -69,14 +69,15 @@ pipeline {
 
         stage('Ansible Configure') {
             steps {
-                sh """
-                    sleep 30  # Wait for EC2 to be ready
-                    ansible-playbook ansible/configure.yml \
-                        -i "${env.EC2_IP}," \
-                        --private-key ~/.ssh/your-key.pem \
-                        -u ec2-user \
-                        --ssh-common-args='-o StrictHostKeyChecking=no'
-                """
+                sshagent(credentials: ['ec2-key']) {
+                    sh """
+                        sleep 60
+                        ansible-playbook ansible/configure.yml \
+                            -i "${env.EC2_IP}," \
+                            -u ec2-user \
+                            --ssh-common-args='-o StrictHostKeyChecking=no'
+                    """
+                }
             }
         }
 
