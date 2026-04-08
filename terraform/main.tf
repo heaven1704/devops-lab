@@ -68,7 +68,7 @@ resource "aws_instance" "lab_instance" {
   ami                    = "ami-0e35ddab05955cf57"
   instance_type          = var.instance_type
   iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
-  vpc_security_group_ids = [aws_security_group.lab_sg.id]
+  vpc_security_group_ids = ["sg-0b4237e027ef315dc"]
   subnet_id              = "subnet-0a8d428752f920560"  # paste your subnet ID here
   associate_public_ip_address = true
 
